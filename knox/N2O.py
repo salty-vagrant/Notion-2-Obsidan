@@ -10,10 +10,9 @@ from re import compile
 from shutil import copyfileobj, make_archive
 from zipfile import ZipFile
 from pathlib import Path
-import N2Omodule
 from tempfile import TemporaryDirectory
-from easygui import fileopenbox
-
+import click
+import cli
 
 NotionZip = Path(fileopenbox(filetypes = ['*.zip']))
 

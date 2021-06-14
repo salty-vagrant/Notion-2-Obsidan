@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "knox"
+version = "0.1.0"
+description = "KNOwledge manager  eXtras: Tools for manipulating personal knowlegde management files"
+authors = ["Mark Bools"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+click = "^8.0.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+mypy = "^0.902"
+
+[tool.poetry.scripts]
+knox = "knox.cli:knox"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

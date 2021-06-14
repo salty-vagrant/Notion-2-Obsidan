@@ -7,6 +7,7 @@ authors = ["Mark Bools"]
 [tool.poetry.dependencies]
 python = "^3.7"
 click = "^8.0.1"
+ply = "^3.11"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"

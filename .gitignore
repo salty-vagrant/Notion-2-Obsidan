@@ -1,3 +1,7 @@
+*.swp
 tags
 __pycache__/
 dist/
+parsetab.py
+parser.out
+yp.py

@@ -2,5 +2,5 @@ from ..base import IPage
 
 
 class Page(IPage):
-    def read(self):
+    def _content(self):
         pass

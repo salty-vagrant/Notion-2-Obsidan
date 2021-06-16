@@ -10,10 +10,10 @@ Aside from Notion comments. This guide will give you full internal link and back
 # The Notion Export
 Out of the box, the export files that Notion provides do not migrate to Obsidian very well. All external links will work, but:
 
-- The hierarchical structure of your pages can only be navigated using Obsidian’s file explorer. 
-- None of the internal navigation links work, which also means there won’t be any backlinks or connections in Obsidian's Graph View. 
-- None of the content in your Notion tables will be viewable.  
-- Embedded images also won’t show. 
+- The hierarchical structure of your pages can only be navigated using Obsidian’s file explorer.
+- None of the internal navigation links work, which also means there won’t be any backlinks or connections in Obsidian's Graph View.
+- None of the content in your Notion tables will be viewable.
+- Embedded images also won’t show.
 
 All of this can be remedied by following the instructions below. Note however, that Notion comments do NOT appear to be included in their export files.
 
@@ -24,16 +24,16 @@ There will be five types of links in the exported files:
 - Two types of Notion generated Internal Links
 - And possibly some blank links that need correction
 
-There may also be some *.csv* files that will need to be converted to *.md* files. 
+There may also be some *.csv* files that will need to be converted to *.md* files.
 
 Let's get started!
 
 ## Export Your Full Notion Database
-1.  From your Notion app, click the **Settings & Members** tab in the sidebar  
+1.  From your Notion app, click the **Settings & Members** tab in the sidebar
 ![Settings&Members](media/export1.png)
-2.  Find and click the **Settings** tab. Find the **Export content** section. Click the **Export all workspace content** button  
+2.  Find and click the **Settings** tab. Find the **Export content** section. Click the **Export all workspace content** button
 ![Settings](media/export2.png)
-3.  Select **Markdown & CSV** as Export Format and click the **Export** button  
+3.  Select **Markdown & CSV** as Export Format and click the **Export** button
 ![Export](media/export3.png
 4.  Save the resulting .zip file to your computer
 5.  Extract the .zip contents to a known location
@@ -44,14 +44,14 @@ All user-generated content will show a 32 digit alphanumeric Unique Identifier (
 
 They look like this:
 
-`Meeting Notes 38f9b024692a4d0fbc14088d47c72d67`  
+`Meeting Notes 38f9b024692a4d0fbc14088d47c72d67`
 
 `Random Notes 49330b16a1f54b4d92b442b25ea986de.md`
 
 We’ll want to remove these UIDs from all of your files and folders. Use a file renaming tool like [ReNamer](http://www.den4b.com/products/renamer) to remove the last 33 characters (UID + space) of every file and folder. The steps that follow are based on Renamer. Interpret them as needed for whatever app you're using.
 
 ## Trim the directory names first
-1. Filter Settings > Add folders as files; Include subfolders 
+1. Filter Settings > Add folders as files; Include subfolders
 2. Delete > Until > Delimiter = " " (space) > From right to left
 3. From your zip extraction, drag the whole directory into app
 4. Sort Decending by Path
@@ -60,8 +60,8 @@ We’ll want to remove these UIDs from all of your files and folders. Use a file
 6. Click **Rename**
 
 ## Trim the file names
-1. Filter Settings > Add files within folders; Include subfolders 
-1. Delete > Until > Delimiter = " " (space) > from right to left 
+1. Filter Settings > Add files within folders; Include subfolders
+1. Delete > Until > Delimiter = " " (space) > from right to left
 1. Drag whole directory in
 1. Select all > Fix conflicting new names `Shift-F`
 1. Click **Preview**. Make sure things look good
@@ -79,7 +79,7 @@ Any page in the export package may have links that need conversion to an Obsidia
 
 Your Notion export will contain *.md* files, *.csv* files, and may also contain image or other attachment files. The *.csv* files will eventually be converted to *.md* files. As a matter of organization simplicity, we'll process all the .md files first before introducing the *.csv* files.
 
-### Convert Links to Obsidian Format 
+### Convert Links to Obsidian Format
 There will be five types of links in the exported files to process. When exported from Notion, they are all in the same "inline" wiki link format. But they differ enough to confidently identify and batch process each type with your search and replace tools.
 
 - `[link name](external.web/address)`
@@ -110,9 +110,9 @@ Process Link Names:
 4.  Search and replace any symbols in the {Note Name} to a space. **Only alphanumerics, underscores, and spaces** are retained in Notion exported filenames
 5.  Remove any duplicate spaces and leading/trailing spaces from the {Note Name}
 6.  Reconstruct Internal Links as pretty links with the source URL as a footnote
-	1.  If {Link Name} is the same as {Note Name} 
+	1.  If {Link Name} is the same as {Note Name}
 `[[Note Name]] ^[URL]`
-	2. If {Link Name} is different than {Note Name}  
+	2. If {Link Name} is different than {Note Name}
 `[[Note Name|Link Name]] ^[URL]`
 
 #### Regex
@@ -121,9 +121,9 @@ This regex will capture what we need with the following groups:
 
 `\[(.[^\[\]\(\)]*)\]\((https:\/\/www.notion.so\/(?:.[^\/]*)\/(.[^\[\]\(\)]*)-.[^\[\]\(\)]*)\)`
 
-- Group 1: Pretty Link Title 
+- Group 1: Pretty Link Title
 - Group 2: URL
-- Group 3: target file name in web URL form (but not yet in Obsidian form) 
+- Group 3: target file name in web URL form (but not yet in Obsidian form)
 
 ### Structural Links
 
@@ -149,7 +149,7 @@ Process the relative paths in each line, in this order:
 2.  Remove the file extension (*.md* or *.csv*)
 3.  Search and replace the all remaining URL space encoding characters (%20) with a normal space character
 4.  Remove parentheses
-5.  Restructure the links into Obsidian Pretty Link format  
+5.  Restructure the links into Obsidian Pretty Link format
 
 Example Results:
 
@@ -195,7 +195,7 @@ This regex will capture what we need with the following groups:
 `\[(.[^\[\]\(\)]*)\]\(about:blank#.[^\[\]\(\)]*\)`
 
 - Group 1: Note Title
-- Group 2: Page name 
+- Group 2: Page name
 (these two match in all instances I've seen. So just process one or the other)
 
 ### Convert tags in lines starting with "Tags: "
@@ -256,12 +256,11 @@ Nice work! You’re finished. Time to import everything into Obsidian.
 
 1.  Place all the converted files into a directory of your choosing
 2.  Open Obsidian and click the Vault Icon ![vault icon](media/vaulticon.png)
-3.  Select **Open folder as vault**  
+3.  Select **Open folder as vault**
 ![open vault](media/vault.png)
 4.  Use the Select Folder window to navigate to the directory with your newly converted files
 
 Enjoy the shift to Obsidian!
 
 # Notion-2-Obsidian Python script on GitHub
-Find an automated Python script based on this outline in [my GitHub repository](https://github.com/visualcurrent/Notion-2-Obsidan) 
-
+Find an automated Python script based on this outline in [my GitHub repository](https://github.com/visualcurrent/Notion-2-Obsidan)

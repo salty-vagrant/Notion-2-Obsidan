@@ -3,7 +3,6 @@ from pathlib import Path
 
 
 class IDataStore(ABC):
-    def __init__(self, source: Path):
-        if not source.exists():
-            raise FileNotFoundError()
-        self._root = source
+    @abstractmethod
+    def exists(self, path: Path) -> bool:
+        pass

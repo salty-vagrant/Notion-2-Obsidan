@@ -9,9 +9,6 @@ class IPage(ABC):
         self._datastore = datastore
         self._path_to_page = path
 
-    @abstractproperty
-    def _content(self):
-        pass
-
-    def parse(self, parser: IParser) -> IAST:
-        return parser.parse(self._content)
+    @property
+    def exists(self) -> bool:
+        return self._datastore.exists(self._path_to_page)

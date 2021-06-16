@@ -32,23 +32,64 @@ def test_fails_when_attempting_to_open_missing_data_source(data):
         model.Notion(data)
 
 
+@pytest.mark.parametrize(
+    "data",
+    [
+        TESTDATA_DIR / "notion/minimal.txt",
+    ],
+)
+def test_fails_when_attempting_to_open_wrong_type_for_datasource(data):
+    with pytest.raises(base.BadDataStore):
+        model.Notion(data)
+
+
+@pytest.mark.parametrize(
+    "data",
+    [
+        TESTDATA_DIR / "notion/empty.zip",
+    ],
+)
+def test_fails_when_attempting_to_open_bad_zip_datasource(data):
+    with pytest.raises(base.BadDataStore):
+        model.Notion(data)
+
+
 # Test Notion Page
 
 
 @pytest.mark.parametrize(
-    "page",
+    "page_ref",
     [
-        model.Page(
-            model.Notion(TESTDATA_DIR / "notion/minimal"),
-            Path("Getting Started 1a3c3f5c5ebe44c7805dedcec04872e6.md"),
-        ),
+        {
+            "datastore": model.Notion(TESTDATA_DIR / "notion/minimal"),
+            "path": Path("Getting Started 1a3c3f5c5ebe44c7805dedcec04872e6.md"),
+        },
     ],
 )
-def test_parse_a_markdown_page(page):
-    parsed_page = model.Page.parse(parser.MarkdownParser())
-    assert isinstance(parsed_page, parser.MarkdownAST)
+def test_create_page_from_datastore(page_ref):
+    page = model.Page(page_ref["datastore"], page_ref["path"])
+    assert isinstance(page, base.IPage)
+    assert page.exists
 
 
-@pytest.mark.skip(reason="No Yet In Play")
-def test_parse_a_database_page():
-    pass
+## Test Notion Markdown Parser
+#
+#
+# @pytest.mark.parametrize(
+#    "page",
+#    [
+#        model.Page(
+#            model.Notion(TESTDATA_DIR / "notion/minimal"),
+#            Path("Getting Started 1a3c3f5c5ebe44c7805dedcec04872e6.md"),
+#        ),
+#    ],
+# )
+# def test_parse_a_markdown_page(page):
+#    _parser = parser.MarkdownParser()
+#    parsed_page = _parser.parse(page)
+#    assert isinstance(parsed_page, parser.MarkdownAST)
+#
+#
+# @pytest.mark.skip(reason="No Yet In Play")
+# def test_parse_a_database_page():
+#    pass

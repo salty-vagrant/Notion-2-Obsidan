@@ -1,0 +1,2 @@
+class BadDataStore(BaseException):
+    pass

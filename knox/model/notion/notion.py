@@ -1,4 +1,4 @@
-from ..base import IDataStore, BadDataStore
+from ..base import IDataStore, IPage, BadDataStore
 from pathlib import Path
 from .notiondirstore import NotionDirStore
 from .notionzipstore import NotionZipStore
@@ -9,6 +9,8 @@ logger = logging.getLogger("__name__")
 
 
 class Notion(IDataStore):
+    _delegate: IDataStore
+
     def __init__(self, path: Path):
         if not path.exists():
             raise FileNotFoundError()
@@ -32,10 +34,10 @@ class Notion(IDataStore):
     def exists(self, path: Path) -> bool:
         return self._delegate.exists(path)
 
-    def read(self, path: Path) -> str:
+    def load_page(self, path: Path) -> IPage:
         if not self.exists(path):
             raise FileNotFoundError(f"{path} not found in {self.name}")
-        return self._delegate.read(path)
+        return self._delegate.load_page(path)
 
     @property
     def name(self) -> str:

@@ -54,42 +54,6 @@ def test_fails_when_attempting_to_open_bad_zip_datasource(data):
         model.Notion(data)
 
 
-@pytest.mark.parametrize(
-    "page_ref",
-    [
-        {
-            "datastore": model.Notion(TESTDATA_DIR / "notion/minimal"),
-            "path": Path("Short Test.md"),
-        },
-        {
-            "datastore": model.Notion(TESTDATA_DIR / "notion/minimal.zip"),
-            "path": Path("Short Test.md"),
-        },
-    ],
-)
-def test_read_file_from_datasource(page_ref):
-    file_content = page_ref["datastore"].read(page_ref["path"])
-    assert file_content == "Short test file\nSecond line\nThird line\n"
-
-
-@pytest.mark.parametrize(
-    "page_ref",
-    [
-        {
-            "datastore": model.Notion(TESTDATA_DIR / "notion/minimal"),
-            "path": Path("nonexistent.md"),
-        },
-        {
-            "datastore": model.Notion(TESTDATA_DIR / "notion/minimal.zip"),
-            "path": Path("nonexistent.md"),
-        },
-    ],
-)
-def test_read_non_existent_file_from_datasource(page_ref):
-    with pytest.raises(FileNotFoundError):
-        page_ref["datastore"].read(page_ref["path"])
-
-
 # Test Notion Page
 
 
@@ -107,9 +71,27 @@ def test_read_non_existent_file_from_datasource(page_ref):
     ],
 )
 def test_create_page_from_datastore(page_ref):
-    page = model.Page(page_ref["datastore"], page_ref["path"])
+    page = page_ref["datastore"].load_page(page_ref["path"])
     assert isinstance(page, base.IPage)
-    assert page.exists
+    assert page_ref["datastore"].exists
+
+
+@pytest.mark.parametrize(
+    "page_ref",
+    [
+        {
+            "datastore": model.Notion(TESTDATA_DIR / "notion/minimal"),
+            "path": Path("nonexistent.md"),
+        },
+        {
+            "datastore": model.Notion(TESTDATA_DIR / "notion/minimal.zip"),
+            "path": Path("nonexistent.md"),
+        },
+    ],
+)
+def test_fail_attempt_to_load_non_existent_page_from_datasource(page_ref):
+    with pytest.raises(FileNotFoundError):
+        page_ref["datastore"].load_page(page_ref["path"])
 
 
 ## Test Notion Markdown Parser

@@ -1,6 +1,7 @@
 import zipfile
 from pathlib import Path
-from ..base import IDataStore
+from ..base import IDataStore, IPage
+from .page import Page
 
 
 class NotionZipStore(IDataStore):
@@ -10,10 +11,8 @@ class NotionZipStore(IDataStore):
     def exists(self, path: Path) -> bool:
         return zipfile.Path(self._root, at=str(path)).exists()
 
-    def read(self, path: Path) -> str:
-        file_path = zipfile.Path(self._root) / path
-        content = file_path.read_text()
-        return content
+    def load_page(self, path: Path) -> IPage:
+        return Page.from_datastore(self, path)
 
     @property
     def name(self) -> str:

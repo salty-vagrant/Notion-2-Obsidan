@@ -1,5 +1,6 @@
 from pathlib import Path
-from ..base import IDataStore
+from ..base import IDataStore, IPage
+from .page import Page
 import logging
 
 logger = logging.getLogger("__name__")
@@ -13,11 +14,8 @@ class NotionDirStore(IDataStore):
         ds_path = self._root / path
         return ds_path.exists()
 
-    def read(self, path: Path) -> str:
-        file_path = self._root / path
-        with open(file_path, "r") as f:
-            content = f.read()
-        return content
+    def load_page(self, path: Path) -> IPage:
+        return Page.from_datastore(self, path)
 
     @property
     def name(self) -> str:

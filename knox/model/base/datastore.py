@@ -1,5 +1,9 @@
+from typing import TYPE_CHECKING
 from abc import ABC, abstractmethod, abstractproperty
 from pathlib import Path
+
+if TYPE_CHECKING:
+    from .page import IPage
 
 
 class IDataStore(ABC):
@@ -8,7 +12,7 @@ class IDataStore(ABC):
         pass
 
     @abstractmethod
-    def read(self, path: Path) -> str:
+    def load_page(self, path: Path) -> "IPage":
         pass
 
     @abstractproperty

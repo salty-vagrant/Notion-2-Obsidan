@@ -13,9 +13,14 @@ repos:
       - id: pytest-check
         name: pytest
         entry: bash -c 'poetry run pytest'
+        pass_filenames: false
         language: system
-      - id: mppy-check
-        name: mpypy
+        types: [python]
+      - id: mypy-check
+        name: mypy
         entry: bash -c 'poetry run mypy knox'
+        pass_filenames: false
         language: system
+        files: ^knox/
+        types: [python]
 exclude: ^(tests/assets/.*)$

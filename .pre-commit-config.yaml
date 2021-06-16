@@ -8,4 +8,14 @@ repos:
     rev: 21.5b2
     hooks:
       - id: black
+  - repo: local
+    hooks:
+      - id: pytest-check
+        name: pytest
+        entry: bash -c 'poetry run pytest'
+        language: system
+      - id: mppy-check
+        name: mpypy
+        entry: bash -c 'poetry run mypy knox'
+        language: system
 exclude: ^(tests/assets/.*)$

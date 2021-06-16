@@ -49,7 +49,8 @@ def p_blank_lines(p):
 
 
 def p_blank_line(p):
-    "blank_line :  NEWLINE WHITESPACE NEWLINE"
+    """blank_line :  WHITESPACE NEWLINE
+    | empty NEWLINE"""
 
 
 def p_block_quote(p):
@@ -98,7 +99,7 @@ def p_html_block(p):
 
 
 def p_para(p):
-    "para : CONTENTS"
+    "para : <Down>CONTENTS NEWLINE"
 
 
 def p_plain(p):

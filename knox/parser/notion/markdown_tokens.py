@@ -8,6 +8,7 @@ tokens = (
     "LISTDOUBLE",
     "TAB",
     "SPACE",
+    "NONINDENTSPACE",
     "WHITESPACE",
     "POUNDSIGN",
     "EXCLAMATION",
@@ -52,13 +53,13 @@ def t_LISTDOUBLE(t):
     return t
 
 
-def t_TAB(t):
-    r"\t"
+def t_NONINDENTSPACE(t):
+    r"\s{0,3}"
     return t
 
 
-def t_SPACE(t):
-    r"\s+"
+def t_INDENT(t):
+    r"\s{4}|\t"
     return t
 
 
@@ -68,13 +69,13 @@ def t_WHITESPACE(t):
 
 
 def t_POUNDSIGN(t):
-    r"\s?[#]{1,6}"
+    r"[#]{1,6}"
     t.value = str(len(t.value))
     return t
 
 
 def t_EXCLAMATION(t):
-    r"\s?\!"
+    r"\!"
     return t
 
 
@@ -89,7 +90,7 @@ def t_CODEFIELD(t):
 
 
 def t_NEWLINE(t):
-    r"[\r\n]"
+    r"\n|\r\n?"
     t.value = len(t.value)
     return t
 

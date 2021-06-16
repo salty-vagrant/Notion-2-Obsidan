@@ -54,6 +54,34 @@ def test_fails_when_attempting_to_open_bad_zip_datasource(data):
         model.Notion(data)
 
 
+@pytest.mark.parametrize(
+    "page_ref",
+    [
+        {
+            "datastore": model.Notion(TESTDATA_DIR / "notion/minimal"),
+            "path": Path("Short Test.md"),
+        },
+    ],
+)
+def test_read_file_from_datasource(page_ref):
+    file_content = page_ref["datastore"].read(page_ref["path"])
+    assert file_content == "Short test file\nSecond line\nThird line\n"
+
+
+@pytest.mark.parametrize(
+    "page_ref",
+    [
+        {
+            "datastore": model.Notion(TESTDATA_DIR / "notion/minimal"),
+            "path": Path("nonexistent.md"),
+        },
+    ],
+)
+def test_read_non_existent_file_from_datasource(page_ref):
+    with pytest.raises(FileNotFoundError):
+        page_ref["datastore"].read(page_ref["path"])
+
+
 # Test Notion Page
 
 

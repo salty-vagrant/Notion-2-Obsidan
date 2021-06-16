@@ -12,3 +12,13 @@ class NotionDirStore(IDataStore):
     def exists(self, path: Path) -> bool:
         ds_path = self._root / path
         return ds_path.exists()
+
+    def read(self, path: Path) -> str:
+        file_path = self._root / path
+        with open(file_path, "r") as f:
+            content = f.read()
+        return content
+
+    @property
+    def name(self) -> str:
+        return str(self._root)

@@ -21,7 +21,6 @@ class Notion(IDataStore):
             raise BadDataStore(
                 f"Attempt to open wrong type from Notion datastore: {path}"
             )
-        self._root = path
 
     def _isZip(self, path: Path) -> bool:
         try:
@@ -32,3 +31,12 @@ class Notion(IDataStore):
 
     def exists(self, path: Path) -> bool:
         return self._delegate.exists(path)
+
+    def read(self, path: Path) -> str:
+        if not self.exists(path):
+            raise FileNotFoundError(f"{path} not found in {self.name}")
+        return self._delegate.read(path)
+
+    @property
+    def name(self) -> str:
+        return self._delegate.name

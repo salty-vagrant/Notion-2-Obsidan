@@ -61,6 +61,10 @@ def test_fails_when_attempting_to_open_bad_zip_datasource(data):
             "datastore": model.Notion(TESTDATA_DIR / "notion/minimal"),
             "path": Path("Short Test.md"),
         },
+        {
+            "datastore": model.Notion(TESTDATA_DIR / "notion/minimal.zip"),
+            "path": Path("Short Test.md"),
+        },
     ],
 )
 def test_read_file_from_datasource(page_ref):

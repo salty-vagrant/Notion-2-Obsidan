@@ -79,6 +79,10 @@ def test_read_file_from_datasource(page_ref):
             "datastore": model.Notion(TESTDATA_DIR / "notion/minimal"),
             "path": Path("nonexistent.md"),
         },
+        {
+            "datastore": model.Notion(TESTDATA_DIR / "notion/minimal.zip"),
+            "path": Path("nonexistent.md"),
+        },
     ],
 )
 def test_read_non_existent_file_from_datasource(page_ref):
@@ -94,6 +98,10 @@ def test_read_non_existent_file_from_datasource(page_ref):
     [
         {
             "datastore": model.Notion(TESTDATA_DIR / "notion/minimal"),
+            "path": Path("Getting Started 1a3c3f5c5ebe44c7805dedcec04872e6.md"),
+        },
+        {
+            "datastore": model.Notion(TESTDATA_DIR / "notion/minimal.zip"),
             "path": Path("Getting Started 1a3c3f5c5ebe44c7805dedcec04872e6.md"),
         },
     ],

@@ -1,6 +1,5 @@
 import pytest
 from knox.model import base, notion as model
-from knox.parser import notion as parser
 from pathlib import Path
 
 TESTDATA_DIR = Path(__file__).parent.parent.resolve() / "assets"
@@ -135,7 +134,7 @@ def test_fail_attempt_to_load_non_existent_page_from_datasource(page_ref):
         page_ref["datastore"].load_page(page_ref["path"])
 
 
-## Test Notion Markdown Parser
+# # Test Notion Markdown Parser
 #
 #
 # @pytest.mark.parametrize(

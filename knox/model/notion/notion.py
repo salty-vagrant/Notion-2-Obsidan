@@ -46,6 +46,11 @@ class Notion(IDataStore):
             raise BadPage(f"{path} is not recognised as a page resource in {self.name}")
         return self._delegate.load_page(path)
 
+    def new_page(self, path: Path) -> IPage:
+        if self.exists(path):
+            raise BadPage(f"{path} already exists in {self.name}")
+        return self._delegate.new_page(path)
+
     @property
     def name(self) -> str:
         return self._delegate.name

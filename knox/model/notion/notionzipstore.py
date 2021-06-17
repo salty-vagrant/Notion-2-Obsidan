@@ -1,6 +1,6 @@
 import zipfile
 from pathlib import Path
-from ..base import IDataStore, IPage
+from ..base import IDataStore, IPage, BadPage
 from .page import Page
 
 
@@ -13,6 +13,15 @@ class NotionZipStore(IDataStore):
 
     def load_page(self, path: Path) -> IPage:
         return Page.from_datastore(self, path)
+
+    def new_page(self, path: Path) -> IPage:
+        if self.exists(path):
+            raise BadPage(f"{path} already exists in {self.name}")
+        page = Page()
+        with zipfile.ZipFile(self._root, "a") as zfile:
+            zfile.writestr(str(path), b"")
+        page.attach(self, path)
+        return page
 
     @property
     def name(self) -> str:

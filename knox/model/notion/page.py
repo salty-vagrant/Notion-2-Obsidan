@@ -4,12 +4,11 @@ from pathlib import Path
 
 class Page(IPage):
     @classmethod
-    def from_datastore(cls, datastore: IDataStore, path: Path, attach=False) -> "Page":
+    def from_datastore(cls, datastore: IDataStore, path: Path) -> "Page":
         if not datastore.exists(path):
             raise FileNotFoundError(f"Could not load {path} from {datastore.name}")
         new_page = cls()
-        if attach:
-            new_page.attach(datastore, path)
+        new_page.attach(datastore, path)
         return new_page
 
     def attach(self, datastore: IDataStore, path: Path):

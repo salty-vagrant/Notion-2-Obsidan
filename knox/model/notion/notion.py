@@ -1,4 +1,4 @@
-from ..base import IDataStore, IPage, BadDataStore
+from ..base import IDataStore, IPage, BadDataStore, BadPage
 from pathlib import Path
 from .notiondirstore import NotionDirStore
 from .notionzipstore import NotionZipStore
@@ -6,6 +6,8 @@ from zipfile import ZipFile, BadZipFile
 import logging
 
 logger = logging.getLogger("__name__")
+
+NOTION_PAGE_EXTENSIONS = [".md", ".csv"]
 
 
 class Notion(IDataStore):
@@ -31,12 +33,17 @@ class Notion(IDataStore):
         except (BadZipFile, FileNotFoundError):
             return False
 
+    def _is_page(self, path: Path) -> bool:
+        return len(set(path.suffixes) & set(NOTION_PAGE_EXTENSIONS)) > 0
+
     def exists(self, path: Path) -> bool:
         return self._delegate.exists(path)
 
     def load_page(self, path: Path) -> IPage:
         if not self.exists(path):
             raise FileNotFoundError(f"{path} not found in {self.name}")
+        if not self._is_page(path):
+            raise BadPage(f"{path} is not recognised as a page resource in {self.name}")
         return self._delegate.load_page(path)
 
     @property

@@ -9,3 +9,7 @@ class IPage(ABC):
     @abstractmethod
     def from_datastore(cls, datastore: IDataStore, path: Path) -> "IPage":
         pass
+
+    @abstractmethod
+    def attach(self, datastore: IDataStore, path: Path):
+        pass

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 from abc import ABC, abstractmethod, abstractproperty
 from pathlib import Path
 
@@ -21,4 +21,8 @@ class IDataStore(ABC):
 
     @abstractproperty
     def name(self) -> str:
+        pass
+
+    @abstractproperty
+    def resources(self) -> List[str]:
         pass

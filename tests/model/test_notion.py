@@ -24,7 +24,7 @@ def data(request, testdata_dir):
     return testdata_dir / request.param
 
 
-@pytest.mark.usefixtures("testdata_dir")
+@pytest.mark.usefixtures("testdata_dir", "expected_results_dir")
 class TestNotion:
 
     # Testing Notion Datasource
@@ -139,6 +139,27 @@ class TestNotion:
     ):
         with pytest.raises(FileNotFoundError):
             datastore.load_page(path)
+
+    @pytest.mark.parametrize(
+        "datastore, expected_resources_list",
+        [
+            ("notion/minimal", "minimal_resources_list.txt"),
+            ("notion/minimal.zip", "minimal_resources_list.txt"),
+        ],
+        indirect=["datastore"],
+    )
+    def test_get_resource_list_from_datastore(
+        self,
+        datastore,
+        expected_resources_list,
+        expected_results_dir,
+    ):
+        with open(expected_results_dir / expected_resources_list, "r") as rf:
+            expected_results_list = [f for f in rf.read().split("\n") if f != r""]
+            expected_results_list.sort()
+        resources = datastore.resources
+        resources.sort()
+        assert resources == expected_results_list
 
     @pytest.mark.parametrize(
         "datastore,path",

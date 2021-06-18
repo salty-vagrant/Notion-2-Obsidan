@@ -1,3 +1,4 @@
+from typing import List
 import zipfile
 from pathlib import Path
 from ..base import IDataStore, IPage, BadPage
@@ -26,3 +27,9 @@ class NotionZipStore(IDataStore):
     @property
     def name(self) -> str:
         return str(self._root)
+
+    @property
+    def resources(self) -> List[str]:
+        with zipfile.ZipFile(self._root, "r") as zfile:
+            result = [f.rstrip("/") for f in zfile.namelist()]
+        return result

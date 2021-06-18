@@ -1,5 +1,5 @@
 import pytest
-from tempfile import mkdtemp
+from tempfile import mkdtemp, TemporaryDirectory
 import shutil
 from pathlib import Path
 
@@ -16,10 +16,8 @@ def testdata_dir(request):
     shutil.rmtree(testdata_path.parent)
 
 
-@pytest.fixture(scope="session")
-def expected_results_dir(request, tmpdir):
+@pytest.fixture(scope="class")
+def expected_results_dir(request):
     filename = Path(request.module.__file__)
-    test_dir = Path(filename.with_suffix(""))
-    if test_dir.isdir():
-        shutil.copytree(test_dir, str(tmpdir))
-    yield Path(tmpdir)
+    test_dir = Path(str(filename.with_suffix("")) + "_expected_results")
+    yield test_dir

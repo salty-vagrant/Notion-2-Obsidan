@@ -1,3 +1,4 @@
+from typing import List
 from ..base import IDataStore, IPage, BadDataStore, BadPage
 from pathlib import Path
 from .notiondirstore import NotionDirStore
@@ -54,3 +55,7 @@ class Notion(IDataStore):
     @property
     def name(self) -> str:
         return self._delegate.name
+
+    @property
+    def resources(self) -> List[str]:
+        return self._delegate.resources

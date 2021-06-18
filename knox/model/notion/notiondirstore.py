@@ -1,3 +1,4 @@
+from typing import List
 from pathlib import Path
 from ..base import IDataStore, IPage, BadPage
 from .page import Page
@@ -29,3 +30,7 @@ class NotionDirStore(IDataStore):
     @property
     def name(self) -> str:
         return str(self._root)
+
+    @property
+    def resources(self) -> List[str]:
+        return [str(f)[len(str(self._root)) + 1 :] for f in Path(self._root).rglob("*")]

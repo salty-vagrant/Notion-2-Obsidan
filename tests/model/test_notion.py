@@ -2,11 +2,23 @@ import pytest
 from knox.model import base, notion as model
 from pathlib import Path
 
+GOOD_PAGES = [
+    {
+        "datastore": "notion/minimal",
+        "path": Path("Getting Started 1a3c3f5c5ebe44c7805dedcec04872e6.md"),
+    },
+    {
+        "datastore": "notion/minimal.zip",
+        "path": Path("Getting Started 1a3c3f5c5ebe44c7805dedcec04872e6.md"),
+    },
+]
+
 
 @pytest.fixture(scope="function")
 def page_ref(request, testdata_dir):
-    request.param["datastore"] = model.Notion(testdata_dir / request.param["datastore"])
-    return request.param
+    translated = request.param.copy()
+    translated["datastore"] = model.Notion(testdata_dir / request.param["datastore"])
+    return translated
 
 
 @pytest.fixture(scope="function")
@@ -69,16 +81,7 @@ class TestNotion:
 
     @pytest.mark.parametrize(
         "page_ref",
-        [
-            {
-                "datastore": "notion/minimal",
-                "path": Path("Getting Started 1a3c3f5c5ebe44c7805dedcec04872e6.md"),
-            },
-            {
-                "datastore": "notion/minimal.zip",
-                "path": Path("Getting Started 1a3c3f5c5ebe44c7805dedcec04872e6.md"),
-            },
-        ],
+        GOOD_PAGES,
         indirect=["page_ref"],
     )
     def test_create_page_from_datastore(self, page_ref):
@@ -111,16 +114,7 @@ class TestNotion:
 
     @pytest.mark.parametrize(
         "page_ref",
-        [
-            {
-                "datastore": "notion/minimal",
-                "path": Path("Getting Started 1a3c3f5c5ebe44c7805dedcec04872e6.md"),
-            },
-            {
-                "datastore": "notion/minimal.zip",
-                "path": Path("Getting Started 1a3c3f5c5ebe44c7805dedcec04872e6.md"),
-            },
-        ],
+        GOOD_PAGES,
         indirect=["page_ref"],
     )
     def test_attach_unattached_empty_page_to_existing_page(self, page_ref):

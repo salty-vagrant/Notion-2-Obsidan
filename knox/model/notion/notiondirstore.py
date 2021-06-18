@@ -1,8 +1,8 @@
 from typing import List
 from pathlib import Path
+import logging
 from ..base import IDataStore, IPage, BadPage
 from .page import Page
-import logging
 
 logger = logging.getLogger("__name__")
 

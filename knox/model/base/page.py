@@ -1,6 +1,8 @@
+from typing import List
 from abc import ABC, abstractmethod, abstractproperty
 from pathlib import Path
 from .datastore import IDataStore
+from .link import Link
 
 
 class IPage(ABC):
@@ -11,4 +13,8 @@ class IPage(ABC):
 
     @abstractmethod
     def attach(self, datastore: IDataStore, path: Path):
+        pass
+
+    @abstractproperty
+    def on_page_links(self) -> List[Link]:
         pass

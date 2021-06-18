@@ -1,8 +1,8 @@
 from typing import Any, Dict
-from .model import notion
 import logging
 import click
 from pathlib import Path
+from .model import notion
 
 FORMAT = "%(asctime)-15s (%(module)s) [%(levelname)s] %(message)s"
 logging.basicConfig(format=FORMAT)
@@ -42,5 +42,5 @@ def import_cmd(ctx: click.Context, source: str, target: str, src_format: str):
 
     When TARGET is omitted a Zip file is created, the name will be random.
     """
-    logger.info(f"Processing {source}")
+    logger.info("Processing %s", source)
     datasource = notion.Notion(Path(source))

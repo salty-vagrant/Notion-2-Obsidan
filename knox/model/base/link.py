@@ -14,3 +14,13 @@ class Link:
         if not isinstance(other, Link):
             return NotImplemented
         return self._uri != other._uri
+
+    def __gt__(self, other: object) -> bool:
+        if not isinstance(other, Link):
+            return NotImplemented
+        return self._uri > other._uri
+
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, Link):
+            return NotImplemented
+        return self._uri < other._uri

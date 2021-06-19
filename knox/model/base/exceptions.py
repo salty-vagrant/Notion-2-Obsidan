@@ -4,3 +4,7 @@ class BadDataStore(BaseException):
 
 class BadPage(BaseException):
     pass
+
+
+class ResourceNotFoundError(BaseException):
+    pass

@@ -1,6 +1,8 @@
 import pytest
+import csv
 from knox.model import base, notion as model
 from pathlib import Path
+from distutils.util import strtobool
 
 GOOD_PAGES = [
     (
@@ -12,6 +14,24 @@ GOOD_PAGES = [
         Path("Getting Started 1a3c3f5c5ebe44c7805dedcec04872e6.md"),
     ),
 ]
+
+
+def _read_as_links(path):
+    with open(path) as f:
+        reader = csv.reader(f)
+        try:
+            expected_page_links = [
+                base.Link(name=f[0], alt_name=f[1], uri=f[2], embedded=strtobool(f[3]))
+                for f in reader
+            ]
+        except ValueError as e:
+            if r"invalid truth value" in str(e):
+                raise ValueError(
+                    f"invalid truth value {f[3]} at {reader.line_num} of {page_path}"
+                )
+            else:
+                raise e
+    return expected_page_links
 
 
 @pytest.fixture(scope="function")
@@ -134,6 +154,27 @@ class TestNotion:
         ],
         indirect=["datastore"],
     )
+    def test_fail_to_attach_unattached_empty_page_to_non_existent_page(
+        self, datastore, path
+    ):
+        page = model.Page()
+        with pytest.raises(FileNotFoundError):
+            page.attach(datastore, path)
+
+    @pytest.mark.parametrize(
+        "datastore,path",
+        [
+            (
+                "notion/minimal",
+                Path("nonexistent.md"),
+            ),
+            (
+                "notion/minimal.zip",
+                Path("nonexistent.md"),
+            ),
+        ],
+        indirect=["datastore"],
+    )
     def test_fail_attempt_to_load_non_existent_page_from_datasource(
         self, datastore, path
     ):
@@ -160,6 +201,46 @@ class TestNotion:
         resources = datastore.resources
         resources.sort()
         assert resources == expected_results_list
+
+    @pytest.mark.parametrize(
+        "datastore, page_path, expected_links_list",
+        [
+            (
+                "notion/minimal",
+                Path("Getting Started 1a3c3f5c5ebe44c7805dedcec04872e6.md"),
+                "page1_link_list.txt",
+            ),
+            (
+                "notion/minimal.zip",
+                Path("Getting Started 1a3c3f5c5ebe44c7805dedcec04872e6.md"),
+                "page1_link_list.txt",
+            ),
+        ],
+        indirect=["datastore"],
+    )
+    def test_on_page_links_detected_correctly(
+        self, datastore, page_path, expected_results_dir, expected_links_list
+    ):
+        page = model.Page.from_datastore(datastore, page_path)
+        on_page_links = page.on_page_links
+        expected_page_links = _read_as_links(expected_results_dir / expected_links_list)
+        assert all(
+            map(lambda x, y: x == y, sorted(on_page_links), sorted(expected_page_links))
+        )
+        assert all(
+            map(
+                lambda x, y: x._name == y._name,
+                sorted(on_page_links),
+                sorted(expected_page_links),
+            )
+        )
+        assert all(
+            map(
+                lambda x, y: x._alt_name == y._alt_name,
+                sorted(on_page_links),
+                sorted(expected_page_links),
+            )
+        )
 
     @pytest.mark.parametrize(
         "datastore,path",

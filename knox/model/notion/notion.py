@@ -3,6 +3,7 @@ from pathlib import Path
 from zipfile import ZipFile, BadZipFile
 import logging
 from ..base import IDataStore, IPage, BadDataStore, BadPage
+from ..base.exceptions import ResourceNotFoundError
 from .notiondirstore import NotionDirStore
 from .notionzipstore import NotionZipStore
 
@@ -53,6 +54,11 @@ class Notion(IDataStore):
         if self.exists(path):
             raise BadPage(f"{path} already exists in {self.name}")
         return self._delegate.new_page(path)
+
+    def read_resource(self, path: Path) -> bytes:
+        if not self.exists(path):
+            raise ResourceNotFoundError(f"{path} not found in {self.name}")
+        return self._delegate.read_resource(path)
 
     @property
     def name(self) -> str:

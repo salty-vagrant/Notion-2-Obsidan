@@ -19,6 +19,10 @@ class IDataStore(ABC):
     def new_page(self, path: Path) -> "IPage":
         pass
 
+    @abstractmethod
+    def read_resource(self, path: Path) -> bytes:
+        pass
+
     @abstractproperty
     def name(self) -> str:
         pass

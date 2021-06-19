@@ -24,6 +24,11 @@ class NotionZipStore(IDataStore):
         page.attach(self, path)
         return page
 
+    def read_resource(self, path: Path) -> bytes:
+        with zipfile.ZipFile(self._root, "r") as zfile:
+            content = zfile.read(str(path))
+        return content
+
     @property
     def name(self) -> str:
         return str(self._root)

@@ -1,0 +1,10 @@
+"Example sub page","",Getting%20Started%201a3c3f5c5ebe44c7805dedcec04872e6/Example%20sub%20page%207838bb921d794ac8bc2948b4d9368b50.md,False
+"you","","https://www.notion.so/product",False
+"Template Gallery","",https://www.notion.so/notion/Notion-Template-Gallery-181e961aeb5c4ee6915307c0dfd5156d,False
+"Help & Support","",https://www.notion.so/notion/Help-Support-e040febf70a94950b8620e6f00005004,False
+"Getting%20Started%201a3c3f5c5ebe44c7805dedcec04872e6/infinitehierarchynodither.gif","",Getting%20Started%201a3c3f5c5ebe44c7805dedcec04872e6/infinitehierarchynodither.gif,True
+"https://youtu.be/TL_N2pmh9O0","",https://youtu.be/TL_N2pmh9O0,False
+"https://youtu.be/FXIrojSK3Jo","",https://youtu.be/FXIrojSK3Jo,False
+"https://youtu.be/2Pwzff-uffU","",https://youtu.be/2Pwzff-uffU,False
+"https://youtu.be/O8qdvSxDYNY","",https://youtu.be/O8qdvSxDYNY,False
+"YouTube channel","",http://youtube.com/c/notion,False

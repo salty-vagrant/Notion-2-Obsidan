@@ -27,6 +27,12 @@ class NotionDirStore(IDataStore):
         page.attach(self, path)
         return page
 
+    def read_resource(self, path: Path) -> bytes:
+        page_path_on_disk = self._root / path
+        with open(page_path_on_disk, "rb") as f:
+            content = f.read()
+        return content
+
     @property
     def name(self) -> str:
         return str(self._root)

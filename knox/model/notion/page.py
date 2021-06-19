@@ -1,7 +1,13 @@
+import re
 from typing import List
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 from markdown_it import MarkdownIt
+from markdown_it.token import Token
 from ..base import IPage, IDataStore, Link
+
+
+UID_PATTERN = re.compile(r"\s[a-fA-f0-9]{32}$")
 
 
 class Page(IPage):
@@ -19,10 +25,15 @@ class Page(IPage):
         return new_page
 
     @property
-    def _parsed_page(self):
+    def _parsed_page(self) -> List[Token]:
         if not self._tokens:
-            self._tokens = MarkdownIt(self._content)
+            md = MarkdownIt("gfm-like")
+            self._tokens = md.parse(self._content)
         return self._tokens
+
+    @property
+    def _content(self) -> str:
+        return self._datastore.read_resource(self._path).decode()
 
     def attach(self, datastore: IDataStore, path: Path):
         if not datastore.exists(path):
@@ -32,18 +43,32 @@ class Page(IPage):
         self._datastore = datastore
         self._path = path
 
+    def _extract_links_from_tokens(self, tokens: List[Token]) -> List[Link]:
+        links = []
+        for i, token in enumerate(tokens):
+            link_text = ""
+            if token.type == "inline":
+                assert token.children is not None
+                links.extend(self._extract_links_from_tokens(token.children))
+            elif token.type == "link_open" or token.type == "image":
+                if token.type == "link_open":
+                    href = str(token.attrs["href"])
+                    link_text = tokens[i + 1].content
+                else:
+                    href = str(token.attrs["src"])
+                    link_text = href
+                    if Path(urlsplit(href).path).suffix == r".md":
+                        link_name = unquote(Path(urlsplit(href).path).name)
+                        link_text = UID_PATTERN.sub(r"", link_name)
+                if urlsplit(href).netloc.startswith("notion.so") and not link_text:
+                    link_name = Path(urlsplit(href).path).name
+                    link_text = UID_PATTERN.sub(r"", link_name)
+                links.append(
+                    Link(name=link_text, uri=href, embedded=(token.type == "image"))
+                )
+        return links
+
     @property
     def on_page_links(self) -> List[Link]:
-        # Walk all Tokens
-        # if token.type == "link_open" or "img" then extact all the info into a Link and add to the list
-        # if img mark as embedded link
-        # get link text (if link) from next node (may require some rendering)
-        # if link's href has a protocol
-        #     if link is notion.so
-        #         extract page name from url
-        #         if extracted name == link text then set alt title = "" else set alt title = link text
-        #         link text = extract page name
-        #            [[link text|alt-name]] ^[original URL]
-        # else (it is a structural link)
-        #   process link to map to Obsidian format (basically convert escape "%.." and remove UID) this becomes map
-        ...
+        links = self._extract_links_from_tokens(self._parsed_page)
+        return links

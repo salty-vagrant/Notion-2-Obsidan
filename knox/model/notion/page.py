@@ -4,7 +4,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
-from ..base import IPage, IDataStore, Link
+from ..base import IPage, IDataStore, Link, BadPage
 
 
 UID_PATTERN = re.compile(r"\s[a-fA-f0-9]{32}$")
@@ -19,13 +19,17 @@ class Page(IPage):
     @classmethod
     def from_datastore(cls, datastore: IDataStore, path: Path) -> "Page":
         if not datastore.exists(path):
-            raise FileNotFoundError(f"Could not load {path} from {datastore.name}")
+            raise BadPage(f"Could not load {path} from {datastore.name}")
         new_page = cls()
         new_page.attach(datastore, path)
         return new_page
 
     @property
     def _parsed_page(self) -> List[Token]:
+        if self._path.suffix != r".md":
+            raise NotImplementedError(
+                f"Cannot yet parse files of type {self._path.suffix}"
+            )
         if not self._tokens:
             md = MarkdownIt("gfm-like")
             self._tokens = md.parse(self._content)

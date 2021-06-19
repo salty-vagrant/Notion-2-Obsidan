@@ -247,21 +247,17 @@ class TestNotion:
         [
             (
                 "notion/minimal",
-                Path(
-                    "tests/assets/notion/minimal/Journal 2ea30c3413394b64b8233a4aa2caef0c.csv"
-                ),
+                Path("Journal 2ea30c3413394b64b8233a4aa2caef0c.csv"),
             ),
             (
                 "notion/minimal.zip",
-                Path(
-                    "tests/assets/notion/minimal/Journal 2ea30c3413394b64b8233a4aa2caef0c.csv"
-                ),
+                Path("Journal 2ea30c3413394b64b8233a4aa2caef0c.csv"),
             ),
         ],
         indirect=["datastore"],
     )
     def test_fails_to_extract_links_from_csv(self, datastore, page_path):
-        with pytest.raises(base.exceptions.BadPage):
+        with pytest.raises(NotImplementedError):
             page = model.Page.from_datastore(datastore, page_path)
             page.on_page_links
 

@@ -28,4 +28,9 @@ repos:
         language: system
         files: ^knox/
         types: [python]
+      - id: safety-check
+        name: safety
+        entry: bash -c 'poetry run safety check --bare'
+        pass_filenames: false
+        language: system
 exclude: ^(tests/assets/.*)$

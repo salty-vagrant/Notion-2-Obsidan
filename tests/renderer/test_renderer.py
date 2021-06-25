@@ -16,7 +16,7 @@ class TestRenderer:
         ],
         indirect=["data"],
     )
-    def test_render_page_as_markdown(self, data):
+    def test_render_file_as_markdown(self, data):
         # pylint: disable=protected-access
         with open(data, "r") as f:
             original_content = f.read()

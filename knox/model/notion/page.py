@@ -5,6 +5,8 @@ from urllib.parse import unquote, urlsplit
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
 from ..base import IPage, IDataStore, Link, BadPage
+from knox.renderer.markdown import MarkdownRenderer
+from knox.renderer import Renderer
 
 
 UID_PATTERN = re.compile(r"\s[a-fA-f0-9]{32}$")
@@ -23,6 +25,12 @@ class Page(IPage):
         new_page = cls()
         new_page.attach(datastore, path)
         return new_page
+
+    @classmethod
+    def create_renderer(cls, ext: str) -> Renderer:
+        if ext != r".md":
+            raise NotImplementedError
+        return MarkdownRenderer()
 
     @property
     def _parsed_page(self) -> List[Token]:
@@ -52,7 +60,7 @@ class Page(IPage):
         for i, token in enumerate(tokens):
             link_text = ""
             if token.type == "inline":
-                assert token.children is not None
+                assert token.children is not None  # nosec
                 links.extend(self._extract_links_from_tokens(token.children))
             elif token.type == "link_open" or token.type == "image":
                 if token.type == "link_open":

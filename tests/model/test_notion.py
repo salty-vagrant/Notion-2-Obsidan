@@ -3,6 +3,7 @@ import csv
 from knox.model import base, notion as model
 from pathlib import Path
 from distutils.util import strtobool
+from markdown_it import MarkdownIt
 
 GOOD_PAGES = [
     (

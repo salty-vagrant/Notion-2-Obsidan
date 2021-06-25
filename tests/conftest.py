@@ -4,7 +4,7 @@ import shutil
 from pathlib import Path
 
 
-TESTDATA_SRCDIR = Path(__file__).parent.parent.resolve() / "assets"
+TESTDATA_SRCDIR = Path(__file__).parent.parent.resolve() / "tests/assets"
 
 
 @pytest.fixture(scope="session")

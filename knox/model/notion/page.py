@@ -4,6 +4,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
+from mdit_py_plugins import dollarmath
 from ..base import IPage, IDataStore, Link, BadPage
 from knox.renderer.markdown import MarkdownRenderer
 from knox.renderer import Renderer
@@ -27,10 +28,10 @@ class Page(IPage):
         return new_page
 
     @classmethod
-    def create_renderer(cls, ext: str) -> Renderer:
+    def create_renderer(cls, ext: str, config: dict = {}) -> Renderer:
         if ext != r".md":
             raise NotImplementedError
-        return MarkdownRenderer()
+        return MarkdownRenderer(config=config)
 
     @property
     def _parsed_page(self) -> List[Token]:
@@ -39,7 +40,7 @@ class Page(IPage):
                 f"Cannot yet parse files of type {self._path.suffix}"
             )
         if not self._tokens:
-            md = MarkdownIt("gfm-like")
+            md = MarkdownIt("gfm-like").use(dollarmath.dollarmath_plugin)
             self._tokens = md.parse(self._content)
         return self._tokens
 

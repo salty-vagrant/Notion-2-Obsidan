@@ -9,13 +9,14 @@ python = "^3.7"
 click = "^8.0.1"
 ply = "^3.11"
 markdown-it-py = {extras = ["linkify"], version = "^1.1.0"}
+mdit-py-plugins = "^0.2.8"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
 mypy = "^0.902"
 pytest-cov = "^2.12.1"
 bandit = "^1.7.0"
-safety = "^1.10.3"
+safety = "^2.3.1"
 
 [tool.poetry.scripts]
 knox = "knox.cli:knox"

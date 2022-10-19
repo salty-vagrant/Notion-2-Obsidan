@@ -1,9 +1,9 @@
 from typing import List
 import re
+import textwrap
 from markdown_it.token import Token
 from markdown_it.tree import SyntaxTreeNode
 from .renderer import Renderer, RenderContext
-import textwrap
 
 
 # This is a kludge to deal with the odd way markup is used in these nodes
@@ -35,7 +35,7 @@ class MarkdownRenderer(Renderer):
             _suffix: str = ""
             if node.is_nested and node.markup and not node.type in MARKUP_EXCEPTIONS:
                 if node.parent and node.parent.type == "ordered_list":
-                    _prefix += "1"
+                    _prefix += str(ctx.list_counter[-1])
                 _prefix += node.markup
                 if node.block:
                     _prefix += " "
@@ -43,7 +43,7 @@ class MarkdownRenderer(Renderer):
                     _suffix = f"{node.markup}"
             result = MULTI_NEWLINE.sub("\n", result)
             if node.block and not node.hidden:
-                if node.next_sibling and result[-1] == "\n":
+                if node.next_sibling and result and result[-1] == "\n":
                     _suffix += ("".join(ctx.indent_stack)).rstrip()
                 _suffix += "\n"
             result = _prefix + result + _suffix
@@ -59,13 +59,13 @@ class MarkdownRenderer(Renderer):
         return _prefix + node.content
 
     def hr(self, node: SyntaxTreeNode, ctx: RenderContext) -> str:
-        return "----\n"
+        return self._config["hr"] + "\n"
 
     def softbreak(self, node: SyntaxTreeNode, ctx: RenderContext) -> str:
         return "\n"
 
     def fence(self, node: SyntaxTreeNode, ctx: RenderContext) -> str:
-        result: str = f"{node.markup}\n{node.content}{node.markup}\n"
+        result: str = f"{node.markup}{node.info}\n{node.content}{node.markup}\n"
         return result
 
     def code_block(self, node: SyntaxTreeNode, ctx: RenderContext) -> str:
@@ -79,8 +79,22 @@ class MarkdownRenderer(Renderer):
             result = f"{node.markup} {node.content} {node.markup}"
         return result
 
+    def math_inline(self, node: SyntaxTreeNode, ctx: RenderContext) -> str:
+        result: str = f"{node.markup}{node.content}{node.markup}"
+        return result
+
+    def math_block(self, node: SyntaxTreeNode, ctx: RenderContext) -> str:
+        result: str = f"{node.markup}{node.content}{node.markup}"
+        return result + "\n"
+
     def heading(self, node: SyntaxTreeNode, ctx: RenderContext) -> str:
         result: str = self._render_children(node, ctx)
+        return result
+
+    def image(self, node: SyntaxTreeNode, ctx: RenderContext) -> str:
+        result = (
+            f"![{self._render_children(node, RenderContext())}]({node.attrs['src']})"
+        )
         return result
 
     def link(self, node: SyntaxTreeNode, ctx: RenderContext) -> str:
@@ -95,11 +109,21 @@ class MarkdownRenderer(Renderer):
         ctx.indent_stack.pop()
         return result
 
+    def ordered_list(self, node: SyntaxTreeNode, ctx: RenderContext) -> str:
+        ctx.list_counter.append(
+            0 if self._config["ordered_list"]["count"] == "+" else 1
+        )
+        result = self._render_children(node, ctx)
+        ctx.list_counter.pop()
+        return result
+
     def list_item(self, node: SyntaxTreeNode, ctx: RenderContext) -> str:
         result: str = ""
-        _indent_change: int = 2
-        if node.parent and node.parent.type == "ordered_list":
-            _indent_change = 3
+        if node.parent is None:
+            return result
+        _indent_change: int = self._config[node.parent.type]["indent"]
+        if self._config[node.parent.type]["count"] == "+":
+            ctx.list_counter[-1] += 1
         ctx.indent_stack.append(" " * _indent_change)
         result += self._render_children(node, ctx)
         ctx.indent_stack.pop()
